@@ -1,4 +1,4 @@
-## ktor-spring-boot-starer
+## ktor-spring-boot-starter
 
 ktor：https://ktor.io/
 
