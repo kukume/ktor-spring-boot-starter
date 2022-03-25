@@ -13,11 +13,13 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.kuku.ktor.service.JacksonConfiguration
 import me.kuku.utils.JacksonUtils
 import me.kuku.utils.toUrlDecode
+import org.springframework.context.ApplicationContext
 import kotlin.reflect.jvm.jvmErasure
 
-fun Application.module() {
+fun Application.module(applicationContext: ApplicationContext) {
     install(DefaultHeaders)
     install(CallLogging)
 
@@ -28,8 +30,11 @@ fun Application.module() {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT, SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL)
+            kotlin.runCatching {
+                val bean = applicationContext.getBean(JacksonConfiguration::class.java)
+                bean.configuration(this)
+            }
         }
-
         register(ContentType.Application.FormUrlEncoded, FormUrlEncodedConverter())
     }
 }

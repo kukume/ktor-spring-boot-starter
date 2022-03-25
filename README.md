@@ -40,3 +40,12 @@ class KtorModule {
     }
 }
 ```
+
+#### 配置Jackson
+
+```kotlin
+@Component
+class MyJackson: JacksonConfiguration {
+    // 实现其方法（函数）
+}
+```

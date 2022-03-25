@@ -26,7 +26,7 @@ open class KtorAutoConfiguration(
     @Bean
     open fun applicationEngine(): ApplicationEngine {
         return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
-            module()
+            module(applicationContext)
             routes()
             val names = applicationContext.beanDefinitionNames
             val clazzList = mutableListOf<Class<*>>()
