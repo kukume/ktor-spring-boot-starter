@@ -9,22 +9,7 @@ import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.request.*
-import io.ktor.routing.*
 import io.ktor.util.*
-
-fun Application.routes() {
-
-    install(Routing) {
-
-        install(DoubleReceive)
-
-        static("/static") {
-            resources("static")
-        }
-
-    }
-
-}
 
 val ApplicationCall.queryParameters: Parameters
     get() = this.request.queryParameters

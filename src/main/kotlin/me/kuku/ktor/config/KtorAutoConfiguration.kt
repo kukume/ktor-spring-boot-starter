@@ -4,7 +4,6 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import me.kuku.ktor.plugins.module
-import me.kuku.ktor.plugins.routes
 import me.kuku.ktor.pojo.KtorConfig
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
@@ -27,7 +26,6 @@ open class KtorAutoConfiguration(
     open fun applicationEngine(): ApplicationEngine {
         return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
             module(applicationContext)
-            routes()
             val names = applicationContext.beanDefinitionNames
             val clazzList = mutableListOf<Class<*>>()
             for (name in names) {
@@ -37,23 +35,19 @@ open class KtorAutoConfiguration(
                     clazzList.add(clazz)
                 }
             }
-            routing {
-                for (clazz in clazzList) {
-                    kotlin.runCatching {
-                        val functions = clazz.kotlin.declaredMemberExtensionFunctions
-                        for (function in functions) {
-                            if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.routing.Routing") {
-                                function.call(applicationContext.getBean(clazz), this)
-                            }
-                        }
+            for (clazz in clazzList) {
+                val functions = clazz.kotlin.declaredMemberExtensionFunctions
+                for (function in functions) {
+                    if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.application.Application") {
+                        function.call(applicationContext.getBean(clazz), this)
                     }
                 }
             }
-            for (clazz in clazzList) {
-                kotlin.runCatching {
+            routing {
+                for (clazz in clazzList) {
                     val functions = clazz.kotlin.declaredMemberExtensionFunctions
                     for (function in functions) {
-                        if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.application.Application") {
+                        if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.routing.Routing") {
                             function.call(applicationContext.getBean(clazz), this)
                         }
                     }

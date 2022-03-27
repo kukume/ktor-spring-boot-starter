@@ -25,6 +25,7 @@ fun Application.module(applicationContext: ApplicationContext) {
 
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+        defaultEncoding = "utf-8"
     }
 
     install(ContentNegotiation) {
