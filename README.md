@@ -7,6 +7,22 @@ ktor：https://ktor.io/
 
 ### 使用
 
+#### 引入（gradle.kts）
+
+使用我的仓库
+
+```kotlin
+repositories {
+    maven { url = uri("https://nexus.kuku.me/repository/maven-public/") }
+}
+```
+
+引入
+
+```kotlin
+implementation("me.kuku:ktor-spring-boot-starter:0.0.1")
+```
+
 #### Routing
 
 ```kotlin
