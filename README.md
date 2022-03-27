@@ -9,7 +9,7 @@ ktor：https://ktor.io/
 
 #### 引入（gradle.kts）
 
-使用我的仓库
+使用我的仓库：https://nexus.kuku.me/#browse/browse:maven-releases:me%2Fkuku%2Fktor-spring-boot-starter
 
 ```kotlin
 repositories {
@@ -20,7 +20,7 @@ repositories {
 引入
 
 ```kotlin
-implementation("me.kuku:ktor-spring-boot-starter:0.0.1")
+implementation("me.kuku:ktor-spring-boot-starter:0.0.2")
 ```
 
 #### Routing
