@@ -78,7 +78,7 @@ suspend fun ApplicationCall.multipart(): MultiPart = MultiPart().apply {
     this@multipart.receiveMultipart().forEachPart { p -> this[p.name!!] = p }
 }
 
-fun ApplicationRequest.ip(): String? {
+fun ApplicationRequest.ip(): String {
     val headers = this.headers
     var ip = headers["x-forwarded-for"]?.split(",")?.get(0)
     if (!ipOk(ip)) {
@@ -99,7 +99,7 @@ fun ApplicationRequest.ip(): String? {
             }
         }
     }
-    return ip
+    return ip!!
 }
 
 private fun ipOk(ip: String?): Boolean {

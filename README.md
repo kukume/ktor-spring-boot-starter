@@ -20,7 +20,7 @@ repositories {
 引入
 
 ```kotlin
-implementation("me.kuku:ktor-spring-boot-starter:0.0.3")
+implementation("me.kuku:ktor-spring-boot-starter:0.0.4")
 ```
 
 #### Routing
