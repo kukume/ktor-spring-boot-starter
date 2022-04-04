@@ -77,3 +77,32 @@ class MultiPart {
 suspend fun ApplicationCall.multipart(): MultiPart = MultiPart().apply {
     this@multipart.receiveMultipart().forEachPart { p -> this[p.name!!] = p }
 }
+
+fun ApplicationRequest.ip(): String? {
+    val headers = this.headers
+    var ip = headers["x-forwarded-for"]?.split(",")?.get(0)
+    if (!ipOk(ip)) {
+        ip = headers["Proxy-Client-IP"]?.split(",")?.get(0)
+        if (!ipOk(ip)) {
+            ip = headers["WL-Proxy-Client-IP"]?.split(",")?.get(0)
+            if (!ipOk(ip)) {
+                ip = headers["HTTP_CLIENT_IP"]?.split(",")?.get(0)
+                if (!ipOk(ip)) {
+                    ip = headers["HTTP_X_FORWARDED_FOR"]?.split(",")?.get(0)
+                    if (!ipOk(ip)) {
+                        ip = headers["X-Real-IP"]?.split(",")?.get(0)
+                        if (!ipOk(ip)) {
+                            ip = this.local.remoteHost
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ip
+}
+
+private fun ipOk(ip: String?): Boolean {
+    val b = ip == null || ip.isEmpty() || "unknown".equals(ip, true)
+    return !b
+}

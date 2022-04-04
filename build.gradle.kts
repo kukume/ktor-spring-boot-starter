@@ -3,17 +3,18 @@ import java.util.Properties
 
 val springBootVersion = "2.6.4"
 val ktorVersion = "1.6.8"
-val utilsVersion = "0.3.17"
+val utilsVersion = "0.3.18"
 
 plugins {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.6.20"
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.kapt") version kotlinVersion
     `maven-publish`
+    signing
 }
 
 group = "me.kuku"
-version = "0.0.2"
+version = "0.0.3"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -91,5 +92,17 @@ publishing {
                 password = properties.getProperty("kuku.password")
             }
         }
+
+        maven {
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = properties.getProperty("sonatype.username")
+                password = properties.getProperty("sonatype.password")
+            }
+        }
+    }
+
+    signing {
+        sign(publishing.publications)
     }
 }
