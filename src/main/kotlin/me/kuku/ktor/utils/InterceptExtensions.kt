@@ -1,8 +1,8 @@
 package me.kuku.ktor.utils
 
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.util.pipeline.*
 
 fun PipelineContext<*, ApplicationCall>.except(list: List<String>): Boolean {

@@ -1,8 +1,8 @@
 package me.kuku.ktor.config
 
-import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.routing.*
 import me.kuku.ktor.plugins.module
 import me.kuku.ktor.pojo.KtorConfig
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -38,7 +38,7 @@ open class KtorAutoConfiguration(
             for (clazz in clazzList) {
                 val functions = clazz.kotlin.declaredMemberExtensionFunctions
                 for (function in functions) {
-                    if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.application.Application") {
+                    if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.application.Application") {
                         function.call(applicationContext.getBean(clazz), this)
                     }
                 }
@@ -47,7 +47,7 @@ open class KtorAutoConfiguration(
                 for (clazz in clazzList) {
                     val functions = clazz.kotlin.declaredMemberExtensionFunctions
                     for (function in functions) {
-                        if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.routing.Routing") {
+                        if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.routing.Routing") {
                             function.call(applicationContext.getBean(clazz), this)
                         }
                     }

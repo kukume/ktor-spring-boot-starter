@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
-val springBootVersion = "2.6.4"
-val ktorVersion = "1.6.8"
-val utilsVersion = "0.3.18"
+val springBootVersion = "2.6.6"
+val ktorVersion = "2.0.0"
+val utilsVersion = "0.3.20"
 
 plugins {
     val kotlinVersion = "1.6.20"
@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "0.0.4"
+version = "0.0.5"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -22,14 +22,18 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
     api("me.kuku:utils:$utilsVersion")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
-    api("io.ktor:ktor-server-core:$ktorVersion")
-    api("io.ktor:ktor-freemarker:$ktorVersion")
-    api("io.ktor:ktor-jackson:$ktorVersion")
-    api("io.ktor:ktor-server-netty:$ktorVersion")
+    api("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-freemarker:$ktorVersion")
+    api("io.ktor:ktor-server-status-pages:$ktorVersion")
+    api("io.ktor:ktor-server-double-receive:$ktorVersion")
+    api("io.ktor:ktor-server-default-headers-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    api("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 }
 
 tasks.withType<KotlinCompile> {
@@ -49,7 +53,10 @@ val docJar by tasks.registering(Jar::class) {
 }
 
 val properties = Properties()
-properties.load(File("nexus.properties").inputStream())
+properties.load(File("publish.properties").inputStream())
+ext.set("signing.keyId", properties.getProperty("signing.keyId"))
+ext.set("signing.password", properties.getProperty("signing.password"))
+ext.set("signing.secretKeyRingFile", properties.getProperty("signing.secretKeyRingFile"))
 
 publishing {
     publications {
