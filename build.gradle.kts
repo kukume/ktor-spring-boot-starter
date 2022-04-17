@@ -3,7 +3,7 @@ import java.util.Properties
 
 val springBootVersion = "2.6.6"
 val ktorVersion = "2.0.0"
-val utilsVersion = "0.3.20"
+val utilsVersion = "0.3.21"
 
 plugins {
     val kotlinVersion = "1.6.20"
