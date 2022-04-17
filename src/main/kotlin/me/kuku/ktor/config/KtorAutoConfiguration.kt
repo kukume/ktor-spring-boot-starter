@@ -1,7 +1,7 @@
 package me.kuku.ktor.config
 
+import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import me.kuku.ktor.plugins.module
 import me.kuku.ktor.pojo.KtorConfig
@@ -24,14 +24,15 @@ open class KtorAutoConfiguration(
 
     @Bean
     open fun applicationEngine(): ApplicationEngine {
-        return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
+        return embeddedServer(CIO, port = ktorConfig.port, host = ktorConfig.host) {
             module(applicationContext)
             val names = applicationContext.beanDefinitionNames
             val clazzList = mutableListOf<Class<*>>()
             for (name in names) {
                 val clazz = applicationContext.getType(name)
                 if (clazz?.isAnnotationPresent(Service::class.java) == true || clazz?.isAnnotationPresent(Component::class.java) == true ||
-                        clazz?.isAnnotationPresent(Controller::class.java) == true) {
+                    clazz?.isAnnotationPresent(Controller::class.java) == true
+                ) {
                     clazzList.add(clazz)
                 }
             }

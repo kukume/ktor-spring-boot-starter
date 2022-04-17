@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "0.0.5"
+version = "0.0.6"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -26,14 +26,14 @@ dependencies {
     api("me.kuku:utils:$utilsVersion")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
     api("io.ktor:ktor-server-core-jvm:$ktorVersion")
-    api("io.ktor:ktor-server-freemarker:$ktorVersion")
+    api("io.ktor:ktor-server-thymeleaf:$ktorVersion")
     api("io.ktor:ktor-server-status-pages:$ktorVersion")
     api("io.ktor:ktor-server-double-receive:$ktorVersion")
     api("io.ktor:ktor-server-default-headers-jvm:$ktorVersion")
     api("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
     api("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     api("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
-    api("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-cio-jvm:$ktorVersion")
 }
 
 tasks.withType<KotlinCompile> {

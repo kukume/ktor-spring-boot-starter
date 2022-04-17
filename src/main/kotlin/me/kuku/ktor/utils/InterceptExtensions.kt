@@ -31,6 +31,40 @@ fun PipelineContext<*, ApplicationCall>.only(list: List<String>): Boolean {
     return false
 }
 
+suspend fun PipelineContext<*, ApplicationCall>.except(block: suspend InterceptQList.() -> Unit) {
+    val list = InterceptQList()
+    block.invoke(list)
+    for (interceptQ in list.interceptQs) {
+        except(interceptQ)
+    }
+}
+
+suspend fun PipelineContext<*, ApplicationCall>.only(block: suspend InterceptQList.() -> Unit) {
+    val list = InterceptQList()
+    block.invoke(list)
+    for (interceptQ in list.interceptQs) {
+        only(interceptQ)
+    }
+}
+
+class InterceptQList {
+
+    val interceptQs = mutableListOf<InterceptQ>()
+
+    fun buildIntercept(body: InterceptQ.() -> Unit) =
+        interceptQs.add(InterceptQ().apply(body))
+
+    fun buildIntercept(interceptPath: InterceptPath, block: suspend InterceptQ.() -> Unit) =
+        interceptQs.add(InterceptQ().add(interceptPath).exec(block))
+
+    fun buildIntercept(path: String, method: String, block: suspend InterceptQ.() -> Unit) =
+        interceptQs.add(InterceptQ().add(path, method).exec(block))
+
+    fun buildIntercept(path: String, method: HttpMethod, block: suspend InterceptQ.() -> Unit) =
+        interceptQs.add(InterceptQ().add(path, method).exec(block))
+
+}
+
 data class InterceptPath(
     val path: String, val method: HttpMethod
 )

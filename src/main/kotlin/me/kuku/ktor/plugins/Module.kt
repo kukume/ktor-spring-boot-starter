@@ -5,16 +5,15 @@ import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import freemarker.cache.ClassTemplateLoader
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.freemarker.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.thymeleaf.*
 import io.ktor.util.reflect.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.charsets.*
@@ -25,14 +24,18 @@ import me.kuku.ktor.service.JacksonConfiguration
 import me.kuku.utils.JacksonUtils
 import me.kuku.utils.toUrlDecode
 import org.springframework.context.ApplicationContext
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
 fun Application.module(applicationContext: ApplicationContext) {
     install(DefaultHeaders)
     install(CallLogging)
 
-    install(FreeMarker) {
-        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
-        defaultEncoding = "utf-8"
+    install(Thymeleaf) {
+        setTemplateResolver(ClassLoaderTemplateResolver().apply {
+            prefix = "templates/"
+            suffix = ".html"
+            characterEncoding = "utf-8"
+        })
     }
 
     install(ContentNegotiation) {
