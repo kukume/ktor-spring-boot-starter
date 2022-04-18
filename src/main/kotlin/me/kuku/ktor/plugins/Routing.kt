@@ -1,24 +1,20 @@
 package me.kuku.ktor.plugins
 
-import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONArray
-import com.alibaba.fastjson.JSONObject
-import com.alibaba.fastjson.TypeReference
+import com.fasterxml.jackson.databind.JsonNode
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
+import me.kuku.utils.Jackson
+import me.kuku.utils.toJsonNode
 
 val ApplicationCall.queryParameters: Parameters
     get() = this.request.queryParameters
 
-suspend fun ApplicationCall.receiveJSONObject(): JSONObject =
-    JSON.parseObject(this.receiveText())
-
-suspend fun ApplicationCall.receiveJSONArray(): JSONArray =
-    JSON.parseArray(this.receiveText())
+suspend fun ApplicationCall.receiveJsonNode(): JsonNode =
+    this.receiveText().toJsonNode()
 
 fun ApplicationCall.propertyOrNull(path: String) =
     this.application.environment.config.propertyOrNull(path)
@@ -32,10 +28,8 @@ val ApplicationCall.environment: ApplicationEnvironment
 inline fun <reified T : Any> Parameters.receive(): T {
     val map = mutableMapOf<String, Any>()
     this.names().forEach { map[it] = this.getOrFail(it) }
-    val jsonStr = JSON.toJSONString(map)
-    return JSON.parseObject(jsonStr, object: TypeReference<T>() {})
+    return Jackson.parseObject<T>(Jackson.toJsonString(map))
 }
-
 
 class MultiPart {
     private val map = mutableMapOf<String, PartData>()

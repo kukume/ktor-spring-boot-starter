@@ -21,7 +21,7 @@ import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.kuku.ktor.service.JacksonConfiguration
-import me.kuku.utils.JacksonUtils
+import me.kuku.utils.Jackson
 import me.kuku.utils.toUrlDecode
 import org.springframework.context.ApplicationContext
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
@@ -60,7 +60,7 @@ class FormUrlEncodedConverter(private val objectMapper: ObjectMapper = jacksonOb
     ): OutgoingContent {
         return OutputStreamContent(
             {
-                val jsonNode = objectMapper.readTree(JacksonUtils.objectMapper.writeValueAsString(value))
+                val jsonNode = objectMapper.readTree(Jackson.objectMapper.writeValueAsString(value))
                 val sb = StringBuilder()
                 jsonNode.fieldNames().forEach {
                     sb.append(it).append(jsonNode.get(it)).append("&")
