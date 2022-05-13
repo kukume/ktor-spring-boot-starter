@@ -6,7 +6,7 @@ val ktorVersion = "2.0.1"
 val utilsVersion = "0.0.1"
 
 plugins {
-    val kotlinVersion = "1.6.20"
+    val kotlinVersion = "1.6.21"
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.kapt") version kotlinVersion
     `maven-publish`
@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "0.0.7"
+version = "0.0.8"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -24,6 +24,7 @@ repositories {
 dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
     api("me.kuku:utils-jackson:0.0.1")
+    compileOnly("org.springframework.data:spring-data-commons:2.6.4")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
     api("io.ktor:ktor-server-core-jvm:$ktorVersion")
     api("io.ktor:ktor-server-thymeleaf:$ktorVersion")
@@ -109,7 +110,7 @@ publishing {
         }
     }
 
-    signing {
-        sign(publishing.publications)
-    }
+//    signing {
+//        sign(publishing.publications)
+//    }
 }
