@@ -40,7 +40,7 @@ fun Application.module(applicationContext: ApplicationContext) {
 
     install(ContentNegotiation) {
         jackson {
-            enable(SerializationFeature.INDENT_OUTPUT, SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL)
+            enable(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL)
             kotlin.runCatching {
                 val bean = applicationContext.getBean(JacksonConfiguration::class.java)
                 bean.configuration(this)
