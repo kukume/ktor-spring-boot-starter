@@ -12,7 +12,7 @@ ktor：https://ktor.io/
 引入
 
 ```kotlin
-implementation("me.kuku:ktor-spring-boot-starter:0.0.5")
+implementation("me.kuku:ktor-spring-boot-starter:0.0.10")
 ```
 
 #### Routing

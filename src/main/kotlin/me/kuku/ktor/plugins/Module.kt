@@ -23,10 +23,9 @@ import kotlinx.coroutines.withContext
 import me.kuku.ktor.service.JacksonConfiguration
 import me.kuku.utils.Jackson
 import me.kuku.utils.toUrlDecode
-import org.springframework.context.ApplicationContext
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
-fun Application.module(applicationContext: ApplicationContext) {
+fun Application.module(jacksonConfiguration: JacksonConfiguration?) {
     install(DefaultHeaders)
     install(CallLogging)
 
@@ -41,10 +40,7 @@ fun Application.module(applicationContext: ApplicationContext) {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL)
-            kotlin.runCatching {
-                val bean = applicationContext.getBean(JacksonConfiguration::class.java)
-                bean.configuration(this)
-            }
+            jacksonConfiguration?.configuration(this)
         }
         register(ContentType.Application.FormUrlEncoded, FormUrlEncodedConverter())
     }
