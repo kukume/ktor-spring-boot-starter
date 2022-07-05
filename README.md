@@ -2,7 +2,7 @@
 
 ktor：https://ktor.io/
 
-整合`Ktor`并提供一些方便的扩展函数
+整合`Ktor`并提供一些方便的扩展函数，版本号前缀与ktor官方一致
 
 
 ### 使用
@@ -12,7 +12,7 @@ ktor：https://ktor.io/
 引入
 
 ```kotlin
-implementation("me.kuku:ktor-spring-boot-starter:0.0.10")
+implementation("me.kuku:ktor-spring-boot-starter:2.0.3.0")
 ```
 
 #### Routing

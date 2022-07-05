@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 val springBootVersion = "2.7.0"
-val ktorVersion = "2.0.2"
+val ktorVersion = "2.0.3"
 val utilsVersion = "0.0.6"
 
 plugins {
@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "0.0.10"
+version = "2.0.3.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -34,7 +34,8 @@ dependencies {
     api("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
     api("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     api("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
-    api("io.ktor:ktor-server-cio-jvm:$ktorVersion")
+//    api("io.ktor:ktor-server-cio-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 }
 
 tasks.withType<KotlinCompile> {

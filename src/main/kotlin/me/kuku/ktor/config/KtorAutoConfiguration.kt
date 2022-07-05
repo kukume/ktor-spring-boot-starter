@@ -1,7 +1,7 @@
 package me.kuku.ktor.config
 
-import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import me.kuku.ktor.plugins.module
 import me.kuku.ktor.pojo.KtorConfig
@@ -50,7 +50,7 @@ open class KtorAutoConfiguration(
                 }
             }
         }
-        return embeddedServer(CIO, port = ktorConfig.port, host = ktorConfig.host) {
+        return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
             module(jacksonConfiguration)
             for (ktorExec in applicationKtor) {
                 ktorExec.function.call(ktorExec.any, this)
