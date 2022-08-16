@@ -12,7 +12,13 @@ ktor：https://ktor.io/
 引入
 
 ```kotlin
-implementation("me.kuku:ktor-spring-boot-starter:2.0.3.0")
+repositories {
+    maven("https://nexus.kuku.me/repository/maven-public/")
+    mavenCentral()
+}
+
+
+implementation("me.kuku:ktor-spring-boot-starter:2.1.0.0")
 ```
 
 #### Routing

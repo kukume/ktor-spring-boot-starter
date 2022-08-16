@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
-val springBootVersion = "2.7.0"
-val ktorVersion = "2.0.3"
+val springBootVersion = "2.7.2"
+val ktorVersion = "2.1.0"
 val utilsVersion = "0.0.6"
 
 plugins {
@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.0.3.0"
+version = "2.1.0.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -24,7 +24,7 @@ repositories {
 dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
     api("me.kuku:utils-jackson:$utilsVersion")
-    compileOnly("org.springframework.data:spring-data-commons:2.7.0")
+    compileOnly("org.springframework.data:spring-data-commons:$springBootVersion")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
     api("io.ktor:ktor-server-core-jvm:$ktorVersion")
     api("io.ktor:ktor-server-thymeleaf:$ktorVersion")
@@ -102,16 +102,20 @@ publishing {
             }
         }
 
-        maven {
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = properties.getProperty("sonatype.username")
-                password = properties.getProperty("sonatype.password")
+        if (properties.getProperty("sonatype.username") != null && properties.getProperty("sonatype.username").isNotEmpty()) {
+            maven {
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = properties.getProperty("sonatype.username")
+                    password = properties.getProperty("sonatype.password")
+                }
             }
         }
     }
 
-    signing {
-        sign(publishing.publications)
+    if (properties.getProperty("signing.keyId") != null && properties.getProperty("signing.keyId").isNotEmpty()) {
+        signing {
+            sign(publishing.publications)
+        }
     }
 }
