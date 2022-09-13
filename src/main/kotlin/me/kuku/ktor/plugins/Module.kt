@@ -46,17 +46,17 @@ fun Application.module(jacksonConfiguration: JacksonConfiguration?) {
     }
 }
 
-class FormUrlEncodedConverter(private val objectMapper: ObjectMapper = jacksonObjectMapper()): ContentConverter {
+class FormUrlEncodedConverter(private val objectMapper: ObjectMapper = Jackson.objectMapper): ContentConverter {
 
-    override suspend fun serialize(
+    override suspend fun serializeNullable(
         contentType: ContentType,
         charset: Charset,
         typeInfo: TypeInfo,
-        value: Any
+        value: Any?
     ): OutgoingContent {
         return OutputStreamContent(
             {
-                val jsonNode = objectMapper.readTree(Jackson.objectMapper.writeValueAsString(value))
+                val jsonNode = objectMapper.readTree(objectMapper.writeValueAsString(value))
                 val sb = StringBuilder()
                 jsonNode.fieldNames().forEach {
                     sb.append(it).append(jsonNode.get(it)).append("&")

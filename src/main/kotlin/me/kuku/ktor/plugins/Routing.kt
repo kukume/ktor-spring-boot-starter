@@ -123,6 +123,6 @@ fun ApplicationRequest.ip(): String {
 }
 
 private fun ipOk(ip: String?): Boolean {
-    val b = ip == null || ip.isEmpty() || "unknown".equals(ip, true)
+    val b = ip.isNullOrEmpty() || "unknown".equals(ip, true)
     return !b
 }
