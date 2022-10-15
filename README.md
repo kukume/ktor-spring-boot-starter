@@ -2,7 +2,7 @@
 
 ktor：https://ktor.io/
 
-整合`Ktor`并提供一些方便的扩展函数，版本号前缀与ktor官方一致
+整合`Ktor`并提供一些扩展函数，版本号前缀与ktor官方一致
 
 
 ### 使用
@@ -18,7 +18,7 @@ repositories {
 }
 
 
-implementation("me.kuku:ktor-spring-boot-starter:2.1.2.1")
+implementation("me.kuku:ktor-spring-boot-starter:2.1.2.2")
 ```
 
 #### Routing
@@ -30,7 +30,7 @@ class KtorRouting {
     
     fun Routing.ro() {
         route("") {
-            get("/") {
+            get {
                 call.respond("Hello World")
             }
         }

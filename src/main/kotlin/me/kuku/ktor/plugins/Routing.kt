@@ -16,12 +16,6 @@ import org.springframework.data.domain.Sort
 suspend fun ApplicationCall.receiveJsonNode(): JsonNode =
     this.receiveText().toJsonNode()
 
-fun ApplicationCall.propertyOrNull(path: String) =
-    this.application.environment.config.propertyOrNull(path)
-
-fun ApplicationCall.property(path: String) =
-    this.application.environment.config.property(path)
-
 inline fun <reified T : Any> Parameters.receive(): T {
     val map = mutableMapOf<String, Any>()
     this.names().forEach { map[it] = this.getOrFail(it) }
@@ -57,46 +51,23 @@ fun Parameters.pageable(): Pageable {
     return PageRequest.of(page, size, sortObj)
 }
 
-class MultiPart {
-    private val map = mutableMapOf<String, PartData>()
+fun List<PartData>.getAsFormItem(name: String) = this.find { it.name == name } as? PartData.FormItem
 
-    fun put(name: String, partData: PartData) {
-        map[name] = partData
-    }
+fun List<PartData>.getAllAsFormItem(name: String) = this.filter { it.name == name }.map { it as? PartData.FormItem? ?: error("${it.name} can not convert PartData.FormItem") }
 
-    operator fun set(name: String, partData: PartData) {
-        map[name] = partData
-    }
+fun List<PartData>.getAsFormItemOrFail(name: String) = getAsFormItem(name) ?: throw MissingRequestParameterException(name)
 
-    fun get(name: String) = map[name]
+fun List<PartData>.getAsFileItem(name: String) = this.find { it.name == name } as? PartData.FileItem
 
-    fun getOrFail(name: String) = map[name] ?: throw MissingRequestParameterException(name)
+fun List<PartData>.getAllAsFileItem(name: String) = this.filter { it.name == name }.map { it as?PartData.FileItem ?: error("${it.name} can not convert PartData.FileItem") }
 
-    fun getValue(name: String) = map[name]?.value
+fun List<PartData>.getAsFileItemOrFail(name: String) = getAsFileItem(name) ?: throw MissingRequestParameterException(name)
 
-    fun getValueOrFail(name: String) = map[name]?.value ?: throw MissingRequestParameterException(name)
+fun List<PartData>.get(name: String) = this.find { it.name == name }
 
-    fun getValueOrDefault(name: String, defaultValue: String) = map[name]?.value ?: defaultValue
+fun List<PartData>.getOrFail(name: String) = this.find { it.name == name } ?: throw MissingRequestParameterException(name)
 
-    fun getFile(name: String) = map[name]?.fileItem
-
-    fun getFileOrFail(name: String) = map[name]?.fileItem ?: throw MissingRequestParameterException(name)
-
-    private val PartData.value: String
-        get() {
-            val formItem = this as PartData.FormItem
-            return formItem.value
-        }
-
-    private val PartData.fileItem: PartData.FileItem
-        get() = this as PartData.FileItem
-
-
-}
-
-suspend fun ApplicationCall.multipart(): MultiPart = MultiPart().apply {
-    this@multipart.receiveMultipart().forEachPart { p -> this[p.name!!] = p }
-}
+fun List<PartData>.getAll(name: String) = this.filter { it.name == name }
 
 fun ApplicationRequest.ip(): String {
     val headers = this.headers
