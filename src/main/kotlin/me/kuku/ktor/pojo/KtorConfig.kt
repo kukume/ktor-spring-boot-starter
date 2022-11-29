@@ -12,3 +12,10 @@ open class KtorConfig {
 
 
 }
+
+@ConfigurationProperties(prefix = "spring.ktor.thymeleaf")
+open class ThymeleafConfig {
+
+    var cache: Boolean = true
+
+}

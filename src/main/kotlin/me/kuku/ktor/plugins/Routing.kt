@@ -9,12 +9,24 @@ import io.ktor.server.request.*
 import io.ktor.server.util.*
 import me.kuku.utils.Jackson
 import me.kuku.utils.toJsonNode
+import me.kuku.utils.toUrlDecode
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 
-suspend fun ApplicationCall.receiveJsonNode(): JsonNode =
-    this.receiveText().toJsonNode()
+suspend fun ApplicationCall.receiveJsonNode(): JsonNode  {
+    val text = this.receiveText()
+    return if (text.startsWith("{") || text.startsWith("[")) text.toJsonNode()
+    else {
+        val objectNode = Jackson.createObjectNode()
+        val split = text.split("&")
+        for (s in split) {
+            val arr = s.split("=")
+            objectNode.put(arr[0].toUrlDecode(), arr[1].toUrlDecode())
+        }
+        objectNode
+    }
+}
 
 inline fun <reified T : Any> Parameters.receive(): T {
     val map = mutableMapOf<String, Any>()

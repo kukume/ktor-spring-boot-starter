@@ -5,7 +5,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import me.kuku.ktor.plugins.module
 import me.kuku.ktor.pojo.KtorConfig
-import me.kuku.ktor.service.JacksonConfiguration
+import me.kuku.ktor.pojo.ThymeleafConfig
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
@@ -16,7 +16,7 @@ import kotlin.reflect.full.extensionReceiverParameter
 
 //@Configuration
 @AutoConfiguration
-@EnableConfigurationProperties(KtorConfig::class)
+@EnableConfigurationProperties(KtorConfig::class, ThymeleafConfig::class)
 @org.springframework.context.annotation.Lazy(false)
 open class KtorAutoConfiguration(
     private val ktorConfig: KtorConfig,
@@ -25,9 +25,6 @@ open class KtorAutoConfiguration(
 
     @Bean
     open fun applicationEngine(): ApplicationEngine {
-        val jacksonConfiguration = kotlin.runCatching {
-            applicationContext.getBean(JacksonConfiguration::class.java)
-        }.getOrNull()
         val applicationKtor = mutableListOf<KtorExec>()
         val routingKtor = mutableListOf<KtorExec>()
         val names = applicationContext.beanDefinitionNames
@@ -51,7 +48,7 @@ open class KtorAutoConfiguration(
             }
         }
         return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
-            module(jacksonConfiguration)
+            module(applicationContext)
             for (ktorExec in applicationKtor) {
                 ktorExec.function.call(ktorExec.any, this)
             }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.serialization.*
@@ -20,12 +19,18 @@ import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.kuku.ktor.pojo.KtorConfig
+import me.kuku.ktor.pojo.ThymeleafConfig
 import me.kuku.ktor.service.JacksonConfiguration
 import me.kuku.utils.Jackson
 import me.kuku.utils.toUrlDecode
+import org.springframework.context.ApplicationContext
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
-fun Application.module(jacksonConfiguration: JacksonConfiguration?) {
+fun Application.module(applicationContext: ApplicationContext) {
+
+    val thymeleafConfig = applicationContext.getBean(ThymeleafConfig::class.java)
+
     install(DefaultHeaders)
     install(CallLogging)
 
@@ -34,8 +39,13 @@ fun Application.module(jacksonConfiguration: JacksonConfiguration?) {
             prefix = "templates/"
             suffix = ".html"
             characterEncoding = "utf-8"
+            isCacheable = thymeleafConfig.cache
         })
     }
+
+    val jacksonConfiguration = kotlin.runCatching {
+        applicationContext.getBean(JacksonConfiguration::class.java)
+    }.getOrNull()
 
     install(ContentNegotiation) {
         jackson {
