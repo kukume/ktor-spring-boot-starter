@@ -1,5 +1,6 @@
 package me.kuku.ktor.config
 
+import io.ktor.server.application.Application
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
@@ -25,41 +26,43 @@ open class KtorAutoConfiguration(
 
     @Bean
     open fun applicationEngine(): ApplicationEngine {
-        val applicationKtor = mutableListOf<KtorExec>()
-        val routingKtor = mutableListOf<KtorExec>()
-        val names = applicationContext.beanDefinitionNames
-        val clazzList = mutableListOf<Class<*>>()
-        for (name in names) {
-            applicationContext.getType(name)?.let {
-                clazzList.add(it)
-            }
-        }
-        for (clazz in clazzList) {
-            val functions = kotlin.runCatching {
-                clazz.kotlin.declaredMemberExtensionFunctions
-            }.getOrNull() ?: continue
-            for (function in functions) {
-                if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.application.Application") {
-                    applicationKtor.add(KtorExec(applicationContext.getBean(clazz), function))
-                }
-                if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.routing.Routing") {
-                    routingKtor.add(KtorExec(applicationContext.getBean(clazz), function))
-                }
-            }
-        }
-        return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host) {
-            module(applicationContext)
-            for (ktorExec in applicationKtor) {
-                ktorExec.function.call(ktorExec.any, this)
-            }
-
-            routing {
-                for (ktorExec in routingKtor) {
-                    ktorExec.function.call(ktorExec.any, this)
-                }
-            }
-        }.start()
+        return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host, module = { init(applicationContext) }).start()
     }
 }
 
 internal data class KtorExec(val any: Any, val function: KFunction<*>)
+
+fun Application.init(applicationContext: ApplicationContext) {
+    val applicationKtor = mutableListOf<KtorExec>()
+    val routingKtor = mutableListOf<KtorExec>()
+    val names = applicationContext.beanDefinitionNames
+    val clazzList = mutableListOf<Class<*>>()
+    for (name in names) {
+        applicationContext.getType(name)?.let {
+            clazzList.add(it)
+        }
+    }
+    for (clazz in clazzList) {
+        val functions = kotlin.runCatching {
+            clazz.kotlin.declaredMemberExtensionFunctions
+        }.getOrNull() ?: continue
+        for (function in functions) {
+            if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.application.Application") {
+                applicationKtor.add(KtorExec(applicationContext.getBean(clazz), function))
+            }
+            if (function.extensionReceiverParameter?.type?.toString() == "io.ktor.server.routing.Routing") {
+                routingKtor.add(KtorExec(applicationContext.getBean(clazz), function))
+            }
+        }
+    }
+    module(applicationContext)
+    for (ktorExec in applicationKtor) {
+        ktorExec.function.call(ktorExec.any, this)
+    }
+
+    routing {
+        for (ktorExec in routingKtor) {
+            ktorExec.function.call(ktorExec.any, this)
+        }
+    }
+}
