@@ -1,9 +1,11 @@
 package me.kuku.ktor.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.server.application.Application
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
+import me.kuku.ktor.plugins.PrivateInnerRouting
 import me.kuku.ktor.plugins.module
 import me.kuku.ktor.pojo.KtorConfig
 import me.kuku.ktor.pojo.ThymeleafConfig
@@ -21,11 +23,13 @@ import kotlin.reflect.full.extensionReceiverParameter
 @org.springframework.context.annotation.Lazy(false)
 open class KtorAutoConfiguration(
     private val ktorConfig: KtorConfig,
-    private val applicationContext: ApplicationContext
+    private val applicationContext: ApplicationContext,
+    private val objectMapper: ObjectMapper
 ) {
 
     @Bean
     open fun applicationEngine(): ApplicationEngine {
+        PrivateInnerRouting.objectMapper = objectMapper
         return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host, module = { init(applicationContext) }).start()
     }
 }

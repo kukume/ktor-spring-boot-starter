@@ -1,37 +1,44 @@
 package me.kuku.ktor.plugins
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
-import me.kuku.utils.Jackson
-import me.kuku.utils.toJsonNode
-import me.kuku.utils.toUrlDecode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.net.URLDecoder
+
+object PrivateInnerRouting {
+    lateinit var objectMapper: ObjectMapper
+}
 
 suspend fun ApplicationCall.receiveJsonNode(): JsonNode  {
     val text = this.receiveText()
-    return if (text.startsWith("{") || text.startsWith("[")) text.toJsonNode()
+    return if (text.startsWith("{") || text.startsWith("[")) PrivateInnerRouting.objectMapper.readTree(text)
     else {
-        val objectNode = Jackson.createObjectNode()
+        val objectNode = PrivateInnerRouting.objectMapper.createObjectNode()
         val split = text.split("&")
         for (s in split) {
             val arr = s.split("=")
-            objectNode.put(arr[0].toUrlDecode(), arr[1].toUrlDecode())
+            withContext(Dispatchers.IO) {
+                objectNode.put(URLDecoder.decode(arr[0], "utf-8"), URLDecoder.decode(arr[1], "utf-8"))
+            }
         }
         objectNode
     }
 }
-
 inline fun <reified T : Any> Parameters.receive(): T {
     val map = mutableMapOf<String, Any>()
     this.names().forEach { map[it] = this.getOrFail(it) }
-    return Jackson.parseObject(Jackson.toJsonString(map))
+    return PrivateInnerRouting.objectMapper.convertValue(map, object: TypeReference<T>() {})
 }
 
 fun Parameters.pageable(): Pageable {

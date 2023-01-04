@@ -3,7 +3,6 @@ package me.kuku.ktor.plugins
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.serialization.*
@@ -19,13 +18,10 @@ import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.kuku.ktor.pojo.KtorConfig
 import me.kuku.ktor.pojo.ThymeleafConfig
-import me.kuku.ktor.service.JacksonConfiguration
-import me.kuku.utils.Jackson
-import me.kuku.utils.toUrlDecode
 import org.springframework.context.ApplicationContext
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import java.net.URLDecoder
 
 fun Application.module(applicationContext: ApplicationContext) {
 
@@ -43,20 +39,13 @@ fun Application.module(applicationContext: ApplicationContext) {
         })
     }
 
-    val jacksonConfiguration = kotlin.runCatching {
-        applicationContext.getBean(JacksonConfiguration::class.java)
-    }.getOrNull()
-
     install(ContentNegotiation) {
-        jackson {
-            enable(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL)
-            jacksonConfiguration?.configuration(this)
-        }
-        register(ContentType.Application.FormUrlEncoded, FormUrlEncodedConverter())
+        register(ContentType.Application.Json, JacksonConverter(PrivateInnerRouting.objectMapper, true))
+        register(ContentType.Application.FormUrlEncoded, FormUrlEncodedConverter(PrivateInnerRouting.objectMapper))
     }
 }
 
-class FormUrlEncodedConverter(private val objectMapper: ObjectMapper = Jackson.objectMapper): ContentConverter {
+class FormUrlEncodedConverter(private val objectMapper: ObjectMapper): ContentConverter {
 
     override suspend fun serializeNullable(
         contentType: ContentType,
@@ -86,7 +75,7 @@ class FormUrlEncodedConverter(private val objectMapper: ObjectMapper = Jackson.o
                 body.split("&").forEach {
                     val arr = it.split("=")
                     val k = arr[0]
-                    val v = arr[1].toUrlDecode()
+                    val v = URLDecoder.decode(arr[1], "utf-8")
                     objectNode.put(k, v)
                 }
                 objectMapper.treeToValue(objectNode, objectMapper.constructType(typeInfo.reifiedType))

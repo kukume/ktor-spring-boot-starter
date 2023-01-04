@@ -4,6 +4,8 @@ ktor：https://ktor.io/
 
 整合`Ktor`并提供一些扩展函数，版本号前缀与ktor官方一致
 
+JSON序列化使用SpringBoot的ObjectMapper
+
 
 ### 使用
 
@@ -18,7 +20,7 @@ repositories {
 }
 
 
-implementation("me.kuku:ktor-spring-boot-starter:2.2.1.0")
+implementation("me.kuku:ktor-spring-boot-starter:2.2.2.1")
 ```
 
 #### Routing
@@ -52,14 +54,5 @@ class KtorModule {
             }
         }
     }
-}
-```
-
-#### 配置Jackson
-
-```kotlin
-@Component
-class MyJackson: JacksonConfiguration {
-    // 实现其方法（函数）
 }
 ```
