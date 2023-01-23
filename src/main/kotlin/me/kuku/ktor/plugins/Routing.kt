@@ -9,6 +9,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
+import io.ktor.util.pipeline.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.data.domain.PageRequest
@@ -115,4 +116,9 @@ fun ApplicationRequest.ip(): String {
 private fun ipOk(ip: String?): Boolean {
     val b = ip.isNullOrEmpty() || "unknown".equals(ip, true)
     return !b
+}
+
+context(PipelineContext<Unit, ApplicationCall>)
+fun JsonNode.getOrFail(name: String): JsonNode {
+    return this.get(name) ?: throw MissingRequestParameterException(name)
 }

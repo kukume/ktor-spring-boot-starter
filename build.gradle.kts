@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.2.2.1"
+version = "2.2.2.2"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -40,7 +40,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
         jvmTarget = "1.8"
     }
 }
