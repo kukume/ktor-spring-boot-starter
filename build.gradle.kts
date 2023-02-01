@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
-val springBootVersion = "2.7.7"
-val ktorVersion = "2.2.2"
+val springBootVersion = "2.7.8"
+val ktorVersion = "2.2.3"
 
 plugins {
     val kotlinVersion = "1.8.0"
@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.2.2.2"
+version = "2.2.3.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
-    compileOnly("org.springframework.data:spring-data-commons:2.7.6")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
 //    compileOnly("com.querydsl:querydsl-core:5.0.0")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-json:$springBootVersion")
