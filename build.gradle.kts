@@ -5,7 +5,7 @@ val springBootVersion = "2.7.8"
 val ktorVersion = "2.2.3"
 
 plugins {
-    val kotlinVersion = "1.8.0"
+    val kotlinVersion = "1.8.10"
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.kapt") version kotlinVersion
     `maven-publish`
@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.2.3.0"
+version = "2.2.3.1"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -21,6 +21,7 @@ repositories {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-websockets-jvm:2.2.3")
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
 //    compileOnly("com.querydsl:querydsl-core:5.0.0")
@@ -34,6 +35,7 @@ dependencies {
     api("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
     api("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
     api("io.ktor:ktor-serialization-jackson-jvm:$ktorVersion")
+    api("io.ktor:ktor-server-websockets:$ktorVersion")
 //    api("io.ktor:ktor-server-cio-jvm:$ktorVersion")
     api("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 }

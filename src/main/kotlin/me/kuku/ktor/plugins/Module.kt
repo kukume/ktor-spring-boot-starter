@@ -12,6 +12,7 @@ import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.thymeleaf.*
+import io.ktor.server.websocket.*
 import io.ktor.util.reflect.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.charsets.*
@@ -22,6 +23,7 @@ import me.kuku.ktor.pojo.ThymeleafConfig
 import org.springframework.context.ApplicationContext
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import java.net.URLDecoder
+import java.time.Duration
 
 fun Application.module(applicationContext: ApplicationContext) {
 
@@ -43,9 +45,17 @@ fun Application.module(applicationContext: ApplicationContext) {
         register(ContentType.Application.Json, JacksonConverter(PrivateInnerRouting.objectMapper, true))
         register(ContentType.Application.FormUrlEncoded, FormUrlEncodedConverter(PrivateInnerRouting.objectMapper))
     }
+
+    install(WebSockets) {
+        pingPeriod = Duration.ofSeconds(15)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+        contentConverter = JacksonWebsocketContentConverter(PrivateInnerRouting.objectMapper)
+    }
 }
 
-class FormUrlEncodedConverter(private val objectMapper: ObjectMapper): ContentConverter {
+class FormUrlEncodedConverter(private val objectMapper: ObjectMapper) : ContentConverter {
 
     override suspend fun serializeNullable(
         contentType: ContentType,
