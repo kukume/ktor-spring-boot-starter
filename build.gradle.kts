@@ -1,11 +1,13 @@
+@file:Suppress("VulnerableLibrariesLocal")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
-val springBootVersion = "2.7.8"
-val ktorVersion = "2.2.4"
+val springBootVersion = "2.7.11"
+val ktorVersion = "2.3.0"
 
 plugins {
-    val kotlinVersion = "1.8.10"
+    val kotlinVersion = "1.8.20"
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.kapt") version kotlinVersion
     `maven-publish`
@@ -13,7 +15,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.2.4.0"
+version = "2.3.0.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -21,11 +23,9 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-websockets-jvm:2.2.3")
     kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
-    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
-//    compileOnly("com.querydsl:querydsl-core:5.0.0")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
+    compileOnly("org.springframework.data:spring-data-commons:$springBootVersion")
     api("org.springframework.boot:spring-boot-starter-json:$springBootVersion")
     api("io.ktor:ktor-server-core-jvm:$ktorVersion")
     api("io.ktor:ktor-server-thymeleaf:$ktorVersion")

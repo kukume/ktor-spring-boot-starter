@@ -20,7 +20,7 @@ repositories {
 }
 
 
-implementation("me.kuku:ktor-spring-boot-starter:2.2.4.0")
+implementation("me.kuku:ktor-spring-boot-starter:2.3.0.0")
 ```
 
 #### Routing
