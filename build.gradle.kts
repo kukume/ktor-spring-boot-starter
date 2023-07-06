@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 val springBootVersion = "2.7.11"
-val ktorVersion = "2.3.1"
+val ktorVersion = "2.3.2"
 
 plugins {
     val kotlinVersion = "1.8.22"
@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.3.1.0"
+version = "2.3.2.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
