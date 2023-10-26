@@ -1,10 +1,9 @@
 @file:Suppress("VulnerableLibrariesLocal")
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 val springBootVersion = "2.7.11"
-val ktorVersion = "2.3.4"
+val ktorVersion = "2.3.5"
 
 plugins {
     val kotlinVersion = "1.9.10"
@@ -15,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.3.4.0"
+version = "2.3.5.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -40,11 +39,8 @@ dependencies {
     api("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
-        jvmTarget = "1.8"
-    }
+tasks.compileKotlin {
+    kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
