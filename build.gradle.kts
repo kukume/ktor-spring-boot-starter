@@ -3,10 +3,10 @@
 import java.util.Properties
 
 val springBootVersion = "2.7.11"
-val ktorVersion = "2.3.5"
+val ktorVersion = "2.3.6"
 
 plugins {
-    val kotlinVersion = "1.9.10"
+    val kotlinVersion = "1.9.21"
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.kapt") version kotlinVersion
     `maven-publish`
@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.3.5.0"
+version = "2.3.6.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
