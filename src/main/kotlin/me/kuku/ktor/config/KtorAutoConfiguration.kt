@@ -12,7 +12,9 @@ import me.kuku.ktor.pojo.ThymeleafConfig
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Bean
+import org.springframework.context.ApplicationListener
+import org.springframework.context.event.ContextRefreshedEvent
+import kotlin.concurrent.thread
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberExtensionFunctions
 import kotlin.reflect.full.extensionReceiverParameter
@@ -25,13 +27,36 @@ open class KtorAutoConfiguration(
     private val ktorConfig: KtorConfig,
     private val applicationContext: ApplicationContext,
     private val objectMapper: ObjectMapper
-) {
+): ApplicationListener<ContextRefreshedEvent> {
 
-    @Bean
-    open fun applicationEngine(): ApplicationEngine {
+    @Volatile
+    var thread: Thread? = null
+    private var stopAwait = false
+
+    override fun onApplicationEvent(event: ContextRefreshedEvent) {
         PrivateInnerRouting.objectMapper = objectMapper
-        return embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host, module = { init(applicationContext) }).start()
+        embeddedServer(Netty, port = ktorConfig.port, host = ktorConfig.host, module = { init(applicationContext) }).start()
+        await()
     }
+
+    private fun await() {
+        thread(isDaemon = false, contextClassLoader = this::class.java.classLoader,
+            name = "ktor-await-thread") {
+            try {
+                thread = Thread.currentThread()
+                while(!stopAwait) {
+                    try {
+                        Thread.sleep(10000)
+                    } catch(ex: InterruptedException) {
+                        // continue and check the flag
+                    }
+                }
+            } finally {
+                thread = null
+            }
+        }
+    }
+
 }
 
 internal data class KtorExec(val any: Any, val function: KFunction<*>)

@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "me.kuku"
-version = "2.3.6.0"
+version = "2.3.6.1"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
