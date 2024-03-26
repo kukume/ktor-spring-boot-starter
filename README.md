@@ -4,7 +4,7 @@ ktor：https://ktor.io/
 
 整合`Ktor`并提供一些扩展函数，版本号前缀与ktor官方一致
 
-JSON序列化使用SpringBoot的ObjectMapper
+JSON序列化使用SpringBoot的ObjectMapper，需要创建一个ObjectMapper的bean
 
 
 ### 使用
