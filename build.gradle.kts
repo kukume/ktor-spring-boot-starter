@@ -3,17 +3,18 @@
 import java.util.Properties
 
 val springBootVersion = "2.7.11"
-val ktorVersion = "2.3.9"
+val ktorVersion = "2.3.10"
 
 plugins {
     val kotlinVersion = "1.9.23"
     kotlin("jvm") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
     `maven-publish`
     signing
 }
 
 group = "me.kuku"
-version = "2.3.9.0"
+version = "2.3.10.0"
 
 repositories {
     maven("https://nexus.kuku.me/repository/maven-public/")
@@ -21,12 +22,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
+    kapt("org.springframework.boot:spring-boot-configuration-processor:$springBootVersion")
     api("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
     compileOnly("org.springframework.data:spring-data-commons:$springBootVersion")
-    api("org.springframework.boot:spring-boot-starter-json:$springBootVersion") {
-        exclude("org.springframework", "spring-web")
-    }
     api("io.ktor:ktor-server-core-jvm:$ktorVersion")
     api("io.ktor:ktor-server-thymeleaf:$ktorVersion")
     api("io.ktor:ktor-server-status-pages:$ktorVersion")
