@@ -20,7 +20,7 @@ repositories {
 }
 
 
-implementation("me.kuku:ktor-spring-boot-starter:2.3.7.0")
+implementation("me.kuku:ktor-spring-boot-starter:2.3.11.0")
 ```
 
 #### Routing
@@ -56,9 +56,3 @@ class KtorModule {
     }
 }
 ```
-
-### sponsor
-[dartnode](https://dartnode.com/)
-
-<img width="117" alt="image" src="https://github.com/kukume/ktor-spring-boot-starter/assets/45278810/97e887d2-1b59-44f1-9f71-ef167f12ec55">
-
